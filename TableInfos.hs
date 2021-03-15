@@ -1,4 +1,4 @@
-module TableInfos (table_design, table, size, _size, final_table, final_table_design, num_of_boxes) where
+module TableInfos (table_design, table, size, _size, final_table, final_table_design, num_of_boxes, boxes_size, boxes_positions) where
 
 {-table_design é a tabela onde o formato das caixas do suguru é descrito. Cada caixa tem um número e esse número e alocado nas posições que representam a caixa.-}
 table_design = [0,   0,  0,  1,  2,  2,  3,  3,
@@ -44,6 +44,18 @@ getNumOfBoxes :: [Int] -> Int -> Int
 getNumOfBoxes [] n = n
 getNumOfBoxes (a:b) n = getNumOfBoxes b (max a n)
 
+
+count :: [Int] -> Int -> Int
+count [] _ = 0
+count (a:b) n | a == n = 1 + count b n
+              | otherwise = count b n
+
+
+getPositions :: [Int] -> Int -> Int -> [Int]
+getPositions [] _ _ = []
+getPositions (a:b) n i  | a == n = ((i):getPositions b n (i + 1))
+                        | otherwise = getPositions b n (i + 1)
+
 -- um novo tamanho é calculado considerando as bordas
 _size = size + 2
 
@@ -55,4 +67,6 @@ final_table = top_bottom_border ++ temp_table ++ top_bottom_border ++ [(-2)]
 
 final_table_design = top_bottom_border ++ temp__table_design ++ top_bottom_border ++ [(-2)]
 
-num_of_boxes = (getNumOfBoxes final_table_design (-1)) + 1
+num_of_boxes = (getNumOfBoxes table_design (-1)) + 1
+boxes_size = [(x, count table_design x) | x<-[0..num_of_boxes - 1]]
+boxes_positions = [(x, getPositions final_table_design x 0) | x<-[0..num_of_boxes - 1]]
