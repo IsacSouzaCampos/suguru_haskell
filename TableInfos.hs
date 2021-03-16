@@ -1,6 +1,9 @@
-module TableInfos (table_design, table, size, _size, final_table, final_table_design, num_of_boxes, boxes_size, boxes_positions) where
+module TableInfos (table_design, table, size, _size, final_table, final_table_design, matrix_final_table, matrix_final_table_design, num_of_boxes, boxes_size, boxes_positions, printTable) where
 
 {-table_design é a tabela onde o formato das caixas do suguru é descrito. Cada caixa tem um número e esse número e alocado nas posições que representam a caixa.-}
+
+type Matrix = [[Int]]
+
 table_design = [0,   0,  0,  1,  2,  2,  3,  3,
                 0,   4,  4,  1,  2,  2,  3,  3,
                 4,   4,  1,  1,  2,  5,  5,  3,
@@ -21,7 +24,7 @@ table = [x, x, x, 3, x, x, 2, x,
          x, x, x, x, x, 3, x, x,
          x, 5, x, x, x, 5, x, x]
 
-sizeFloat = sqrt 64
+sizeFloat = sqrt (fromIntegral (length table))
 
 -- valor inteiro que representa o número de linhas e colunas da tabela
 size = round sizeFloat
@@ -40,6 +43,11 @@ addBorder (a:b) i = do
     a:addBorder b (i + 1)
 
 
+chop :: Int -> [Int] -> Matrix
+chop _ [] = []
+chop n xs = take n xs:chop n (drop n xs)
+
+
 getNumOfBoxes :: [Int] -> Int -> Int
 getNumOfBoxes [] n = n
 getNumOfBoxes (a:b) n = getNumOfBoxes b (max a n)
@@ -56,6 +64,10 @@ getPositions [] _ _ = []
 getPositions (a:b) n i  | a == n = ((i):getPositions b n (i + 1))
                         | otherwise = getPositions b n (i + 1)
 
+
+printTable :: Matrix -> IO()
+printTable = putStrLn . unlines . map (unwords . map show)
+
 -- um novo tamanho é calculado considerando as bordas
 _size = size + 2
 
@@ -66,6 +78,9 @@ temp__table_design = addBorder table_design 0
 final_table = top_bottom_border ++ temp_table ++ top_bottom_border ++ [(-2)]
 
 final_table_design = top_bottom_border ++ temp__table_design ++ top_bottom_border ++ [(-2)]
+
+matrix_final_table = chop _size final_table
+matrix_final_table_design = chop _size final_table_design
 
 num_of_boxes = (getNumOfBoxes table_design (-1)) + 1
 boxes_size = [(x, count table_design x) | x<-[0..num_of_boxes - 1]]
