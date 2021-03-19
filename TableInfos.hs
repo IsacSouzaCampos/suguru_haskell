@@ -1,4 +1,4 @@
-module TableInfos (table_design, table, size, _size, final_table, final_table_design, matrix_final_table, matrix_final_table_design, num_of_boxes, boxes_size, boxes_positions, printTable) where
+module TableInfos (table_design, table, size, _size, final_table, final_table_design, matrix_final_table, matrix_final_table_design, num_of_boxes, boxes_size, boxes_positions, printTable, chop, correctFinalTable, getValidPositions) where
 
 {-table_design é a tabela onde o formato das caixas do suguru é descrito. Cada caixa tem um número e esse número e alocado nas posições que representam a caixa.-}
 
@@ -63,6 +63,24 @@ getPositions :: [Int] -> Int -> Int -> [Int]
 getPositions [] _ _ = []
 getPositions (a:b) n i  | a == n = ((i):getPositions b n (i + 1))
                         | otherwise = getPositions b n (i + 1)
+
+
+getValidPositions :: [Int] -> [Int]
+getValidPositions [] = []
+getValidPositions (a:b) | a < 0 = getValidPositions b
+                        | otherwise = [a] ++ getValidPositions b
+
+
+takeOffExtraValues :: [Int] -> Int -> [Int]
+takeOffExtraValues [] _ = []
+takeOffExtraValues (a:b) i  | i >= (size * size) = []
+                            | otherwise = [a] ++ takeOffExtraValues b (i + 1)
+
+
+correctFinalTable :: [Int] -> [Int]
+correctFinalTable [] = []
+correctFinalTable xs = do
+  takeOffExtraValues (getValidPositions xs) 0
 
 
 printTable :: Matrix -> IO()
