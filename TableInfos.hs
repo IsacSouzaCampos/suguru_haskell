@@ -1,4 +1,4 @@
-module TableInfos (table_design, table, size, _size, final_table, final_table_design, matrix_final_table, matrix_final_table_design, num_of_boxes, boxes_size, boxes_positions, printTable, chop, correctFinalTable, getValidPositions) where
+module TableInfos (table_design, size, _size, final_table, final_table_design, boxes_size, boxes_positions, printTable, chop, getValidPositions) where
 
 {-table_design é a tabela onde o formato das caixas do suguru é descrito. Cada caixa tem um número e esse número e alocado nas posições que representam a caixa.-}
 
@@ -13,6 +13,14 @@ table_design = [0,   0,  0,  1,  2,  2,  3,  3,
                 10, 10,  8, 12,  7, 11, 11,  9,
                 10, 10, 12, 12, 12, 12, 11, 11]
 
+{-- Outro exemplo
+table_design = [0, 0, 0, 1, 1,
+                0, 2, 2, 3, 1,
+                2, 2, 3, 3, 1,
+                2, 3, 3, 4, 1,
+                4, 4, 4, 4, 5]
+--}
+
 -- x representa as posições indefinidas da tabela
 x = -1
 table = [x, x, x, 3, x, x, 2, x,
@@ -23,6 +31,14 @@ table = [x, x, x, 3, x, x, 2, x,
          x, x, x, x, 4, x, x, 4,
          x, x, x, x, x, 3, x, x,
          x, 5, x, x, x, 5, x, x]
+
+{-- Outro exemplo
+table = [1, x, x, 5, x,
+         x, x, x, x, x,
+         1, x, 2, x, 4,
+         x, x, x, x, x,
+         x, 3, x, x, x]
+--}
 
 sizeFloat = sqrt (fromIntegral (length table))
 
@@ -71,18 +87,6 @@ getValidPositions (a:b) | a < 0 = getValidPositions b
                         | otherwise = [a] ++ getValidPositions b
 
 
-takeOffExtraValues :: [Int] -> Int -> [Int]
-takeOffExtraValues [] _ = []
-takeOffExtraValues (a:b) i  | i >= (size * size) = []
-                            | otherwise = [a] ++ takeOffExtraValues b (i + 1)
-
-
-correctFinalTable :: [Int] -> [Int]
-correctFinalTable [] = []
-correctFinalTable xs = do
-  takeOffExtraValues (getValidPositions xs) 0
-
-
 printTable :: Matrix -> IO()
 printTable = putStrLn . unlines . map (unwords . map show)
 
@@ -96,9 +100,6 @@ temp__table_design = addBorder table_design 0
 final_table = top_bottom_border ++ temp_table ++ top_bottom_border ++ [(-2)]
 
 final_table_design = top_bottom_border ++ temp__table_design ++ top_bottom_border ++ [(-2)]
-
-matrix_final_table = chop _size final_table
-matrix_final_table_design = chop _size final_table_design
 
 num_of_boxes = (getNumOfBoxes table_design (-1)) + 1
 boxes_size = [(x, count table_design x) | x<-[0..num_of_boxes - 1]]

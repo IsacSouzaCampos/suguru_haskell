@@ -113,7 +113,7 @@ checkValidation f_table updt_table n box_n v vf = do
         if not isFinished then
           checkValidation f_table updt_table n box_n (v + 1) vf
         else
-          (True, new_updt_table ++ [v])
+          (True, new_updt_table)
 
     else
       checkValidation f_table updt_table n box_n (v + 1) vf
