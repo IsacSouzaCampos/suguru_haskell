@@ -1,6 +1,5 @@
 module Suguru (setPosition, nextPosition, getFirst, getSecond) where
 import TableInfos
-import Debug.Trace
 
 {-getBoxNumber: Recebe a table_design e uma posição como entradas e retorna o id da caixa em que a posição se encontra-}
 getBoxNumber :: [Int] -> Int -> Int -> Int

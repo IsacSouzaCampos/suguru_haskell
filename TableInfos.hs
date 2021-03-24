@@ -94,11 +94,11 @@ _size = size + 2
 -- processo de criação das bordas
 top_bottom_border = [(-2) | x<-[1.._size]]
 temp_table = addBorder table 0
-temp__table_design = addBorder table_design 0
+temp_table_design = addBorder table_design 0
 
 final_table = top_bottom_border ++ temp_table ++ top_bottom_border ++ [(-2)]
 
-final_table_design = top_bottom_border ++ temp__table_design ++ top_bottom_border ++ [(-2)]
+final_table_design = top_bottom_border ++ temp_table_design ++ top_bottom_border ++ [(-2)]
 
 -- criação de estruturas de dados a serem usadas durante a execução do programa
 num_of_boxes = (getNumOfBoxes table_design (-1)) + 1
